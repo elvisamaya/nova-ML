@@ -489,3 +489,248 @@ function PixelCaptainNova() {
     </div>
   );
 }
+
+function StageSelector({ stages, currentStage, setCurrentStage, completedStages }) {
+  const highestUnlocked = Math.min(completedStages.length, stages.length - 1);
+
+  return (
+    <div style={{ display: "grid", gap: 14 }}>
+      {stages.map((stage, i) => {
+        const active = i === currentStage;
+        const done = completedStages.includes(i);
+        const unlocked = i <= highestUnlocked;
+
+        return (
+          <button
+            key={stage.id}
+            onClick={() => {
+              if (unlocked) setCurrentStage(i);
+            }}
+            disabled={!unlocked}
+            style={{
+              background: active ? stage.color : "#0b0b0b",
+              color: active ? "#000" : unlocked ? "#fff" : "#666",
+              border: active ? `4px solid ${stage.color}` : "4px solid #2a2a2a",
+              padding: "14px 16px",
+              textAlign: "left",
+              cursor: unlocked ? "pointer" : "not-allowed",
+              fontSize: 16,
+              fontWeight: 700,
+              boxShadow: active ? "6px 6px 0 rgba(255,255,255,0.08)" : "none",
+              opacity: unlocked ? 1 : 0.55,
+            }}
+          >
+            <div style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
+              <PixelWorldIcon type={stage.iconType} color={active ? "#000" : unlocked ? stage.color : "#666"} />
+              <div>
+                <div>{done ? "✓ " : !unlocked ? "🔒 " : ""}{stage.world}</div>
+                <div
+                  style={{
+                    marginTop: 6,
+                    fontSize: 12,
+                    fontWeight: 500,
+                    opacity: active ? 0.9 : 0.75,
+                    lineHeight: 1.4,
+                    maxWidth: 190,
+                  }}
+                >
+                  {stage.subtitle}
+                </div>
+              </div>
+            </div>
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+function IntroScreen({ onStart }) {
+  return (
+    <div
+      style={{
+        minHeight: "100vh",
+        display: "grid",
+        placeItems: "center",
+        position: "relative",
+        zIndex: 1,
+        padding: 28,
+      }}
+    >
+      <div style={{ width: "100%", maxWidth: 1080 }}>
+        <PixelPanel accent="#59d0ff">
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "1.2fr 0.8fr",
+              gap: 28,
+              alignItems: "center",
+            }}
+          >
+            <div>
+              <h1
+                style={{
+                  margin: 0,
+                  fontSize: 72,
+                  lineHeight: 0.95,
+                  textTransform: "uppercase",
+                }}
+              >
+                AstroML
+                <br />
+                Journey
+              </h1>
+
+              <div
+                style={{
+                  marginTop: 24,
+                  border: "4px solid #59d0ff",
+                  background: "#090909",
+                  padding: 18,
+                  fontSize: 20,
+                  lineHeight: 1.7,
+                }}
+              >
+                Far beyond Earth, the learning routes between worlds have gone dark. The old star map that once guided young explorers through the secrets of intelligent machines has fallen quiet.
+              </div>
+
+              <div
+                style={{
+                  marginTop: 18,
+                  border: "4px solid #2a2a2a",
+                  background: "#090909",
+                  padding: 18,
+                  fontSize: 18,
+                  lineHeight: 1.7,
+                }}
+              >
+                Captain Nova has been sent to restore the route. Each world holds one missing part of the journey: the images machines begin with, the changes that prepare them, the layered systems that interpret them, the trials that sharpen them, and the tests that reveal what they truly know.
+              </div>
+
+              <div
+                style={{
+                  marginTop: 18,
+                  border: "4px solid #2a2a2a",
+                  background: "#090909",
+                  padding: 18,
+                  fontSize: 18,
+                  lineHeight: 1.7,
+                }}
+              >
+                Travel from orbit to orbit, relight each checkpoint, and rebuild the path across the stars one world at a time.
+              </div>
+
+              <button
+                onClick={onStart}
+                style={{
+                  marginTop: 24,
+                  padding: "16px 22px",
+                  background: "#59d0ff",
+                  color: "#000",
+                  border: "4px solid #59d0ff",
+                  cursor: "pointer",
+                  fontSize: 18,
+                  fontWeight: 800,
+                  fontFamily: '"Courier New", "Lucida Console", Monaco, monospace',
+                  textTransform: "uppercase",
+                }}
+              >
+                Start Mission →
+              </button>
+            </div>
+
+            <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+              <PixelPanel
+                accent="#2a2a2a"
+                style={{
+                  background: "#000",
+                  display: "grid",
+                  placeItems: "center",
+                  minHeight: 300,
+                  width: 260,
+                  padding: 16,
+                }}
+              >
+                <div style={{ textAlign: "center" }}>
+                  <div
+                    style={{
+                      fontSize: 12,
+                      textTransform: "uppercase",
+                      color: "#bdbdbd",
+                      marginBottom: 18,
+                      letterSpacing: "0.1em",
+                    }}
+                  >
+                    Captain Nova
+                  </div>
+                  <PixelCaptainNova />
+                </div>
+              </PixelPanel>
+            </div>
+          </div>
+        </PixelPanel>
+      </div>
+    </div>
+  );
+}
+
+function FinalScreen({ onRestart }) {
+  return (
+    <div
+      style={{
+        minHeight: "100vh",
+        display: "grid",
+        placeItems: "center",
+        position: "relative",
+        zIndex: 1,
+        padding: 28,
+      }}
+    >
+      <div style={{ width: "100%", maxWidth: 1000 }}>
+        <PixelPanel accent="#6fe88b" style={{ textAlign: "center" }}>
+          <div
+            style={{
+              fontSize: 12,
+              textTransform: "uppercase",
+              letterSpacing: "0.12em",
+              color: "#6fe88b",
+              marginBottom: 12,
+            }}
+          >
+            Route Restored
+          </div>
+
+          <div style={{ display: "grid", placeItems: "center", marginBottom: 20 }}>
+            <PixelCaptainNova />
+          </div>
+
+          <h1
+            style={{
+              margin: 0,
+              fontSize: 68,
+              lineHeight: 0.95,
+              textTransform: "uppercase",
+            }}
+          >
+            Mission
+            <br />
+            Complete
+          </h1>
+
+          <div
+            style={{
+              marginTop: 24,
+              border: "4px solid #6fe88b",
+              background: "#090909",
+              padding: 20,
+              fontSize: 22,
+              lineHeight: 1.7,
+              maxWidth: 760,
+              marginLeft: "auto",
+              marginRight: "auto",
+            }}
+          >
+            The star map is glowing again. With every world relit, Captain Nova has restored the learning route across the galaxy.
+          </div>
+
+          <div

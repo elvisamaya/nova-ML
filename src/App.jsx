@@ -980,3 +980,249 @@ export default function App() {
                     </div>
 
                     <div>
+                      <div
+                        style={{
+                          fontSize: 12,
+                          textTransform: "uppercase",
+                          color: "#bdbdbd",
+                          marginBottom: 10,
+                        }}
+                      >
+                        Core Ideas
+                      </div>
+                      <div style={{ display: "grid", gap: 10 }}>
+                        {stage.ideas.map((idea) => (
+                          <div
+                            key={idea}
+                            style={{
+                              border: "4px solid #2a2a2a",
+                              padding: 14,
+                              background: "#090909",
+                              fontSize: 16,
+                              lineHeight: 1.5,
+                            }}
+                          >
+                            {idea}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </PixelPanel>
+
+                <div style={{ display: "grid", gap: 18 }}>
+                  <PixelPanel accent={stage.color}>
+                    <div
+                      style={{
+                        fontSize: 12,
+                        textTransform: "uppercase",
+                        color: "#bdbdbd",
+                        marginBottom: 10,
+                      }}
+                    >
+                      Mission Checkpoint
+                    </div>
+
+                    <div
+                      style={{
+                        fontSize: 24,
+                        lineHeight: 1.35,
+                        fontWeight: 700,
+                        textTransform: "uppercase",
+                      }}
+                    >
+                      {stage.mission.prompt}
+                    </div>
+
+                    <div style={{ display: "grid", gap: 12, marginTop: 20 }}>
+                      {stage.mission.options.map((option, index) => {
+                        const selected = answerState === index;
+
+                        let bg = "#090909";
+                        let border = "4px solid #2a2a2a";
+                        let color = "#fff";
+
+                        if (answerState !== undefined && selected) {
+                          if (gotItRight) {
+                            bg = stage.color;
+                            border = `4px solid ${stage.color}`;
+                            color = "#000";
+                          } else {
+                            bg = "#1a1111";
+                            border = "4px solid #5a2a2a";
+                            color = "#f3d6d6";
+                          }
+                        }
+
+                        return (
+                          <button
+                            key={option}
+                            onClick={() => handleAnswer(index)}
+                            disabled={answerState !== undefined}
+                            style={{
+                              width: "100%",
+                              textAlign: "left",
+                              padding: 16,
+                              background: bg,
+                              border,
+                              color,
+                              cursor: answerState !== undefined ? "default" : "pointer",
+                              fontSize: 16,
+                              lineHeight: 1.4,
+                              fontFamily: '"Courier New", "Lucida Console", Monaco, monospace',
+                              fontWeight: 700,
+                            }}
+                          >
+                            {option}
+                          </button>
+                        );
+                      })}
+                    </div>
+
+                    {answerState !== undefined && (
+                      <div
+                        style={{
+                          marginTop: 20,
+                          border: `4px solid ${gotItRight ? stage.color : "#5a2a2a"}`,
+                          background: gotItRight ? "#0b0b0b" : "#110d0d",
+                          padding: 16,
+                        }}
+                      >
+                        <div
+                          style={{
+                            fontSize: 12,
+                            textTransform: "uppercase",
+                            color: gotItRight ? stage.color : "#d8a8a8",
+                            marginBottom: 8,
+                          }}
+                        >
+                          Result
+                        </div>
+                        <div style={{ fontSize: 20, fontWeight: 700, textTransform: "uppercase" }}>
+                          {gotItRight ? "Checkpoint Cleared" : "Signal Lost"}
+                        </div>
+                        <div style={{ marginTop: 10, fontSize: 15, lineHeight: 1.5 }}>
+                          {gotItRight
+                            ? stage.mission.success
+                            : "That route is unstable. Reset the checkpoint and try again."}
+                        </div>
+                      </div>
+                    )}
+
+                    {answerState !== undefined && !gotItRight && (
+                      <button
+                        onClick={resetCurrentCheckpoint}
+                        style={{
+                          marginTop: 12,
+                          padding: "14px 18px",
+                          background: "#090909",
+                          color: "#fff",
+                          border: "4px solid #5a2a2a",
+                          cursor: "pointer",
+                          fontSize: 16,
+                          fontWeight: 700,
+                          fontFamily: '"Courier New", "Lucida Console", Monaco, monospace',
+                        }}
+                      >
+                        Retry Checkpoint
+                      </button>
+                    )}
+
+                    {answerState !== undefined && gotItRight && !completedStages.includes(currentStage) && (
+                      <button
+                        onClick={confirmCheckpoint}
+                        style={{
+                          marginTop: 12,
+                          padding: "14px 18px",
+                          background: stage.color,
+                          color: "#000",
+                          border: `4px solid ${stage.color}`,
+                          cursor: "pointer",
+                          fontSize: 16,
+                          fontWeight: 800,
+                          fontFamily: '"Courier New", "Lucida Console", Monaco, monospace',
+                        }}
+                      >
+                        Confirm Route
+                      </button>
+                    )}
+
+                    <div style={{ display: "flex", gap: 12, marginTop: 22, flexWrap: "wrap" }}>
+                      <button
+                        onClick={() => setCurrentStage((s) => Math.max(s - 1, 0))}
+                        style={{
+                          padding: "14px 18px",
+                          background: "#090909",
+                          color: "#fff",
+                          border: "4px solid #2a2a2a",
+                          cursor: "pointer",
+                          fontSize: 16,
+                          fontWeight: 700,
+                          fontFamily: '"Courier New", "Lucida Console", Monaco, monospace',
+                        }}
+                      >
+                        ← Previous
+                      </button>
+
+                      <button
+                        onClick={handleNextWorld}
+                        disabled={!completedStages.includes(currentStage)}
+                        style={{
+                          padding: "14px 18px",
+                          background: completedStages.includes(currentStage) ? stage.color : "#1a1a1a",
+                          color: completedStages.includes(currentStage) ? "#000" : "#666",
+                          border: completedStages.includes(currentStage)
+                            ? `4px solid ${stage.color}`
+                            : "4px solid #2a2a2a",
+                          cursor: completedStages.includes(currentStage) ? "pointer" : "not-allowed",
+                          fontSize: 16,
+                          fontWeight: 800,
+                          fontFamily: '"Courier New", "Lucida Console", Monaco, monospace',
+                        }}
+                      >
+                        {currentStage === stages.length - 1 ? "Finish Mission →" : "Next World →"}
+                      </button>
+                    </div>
+                  </PixelPanel>
+
+                  <div
+                    style={{
+                      width: 220,
+                      justifySelf: "end",
+                      border: `4px solid ${stage.color}`,
+                      background: "#050505",
+                      padding: 12,
+                      boxShadow: "8px 8px 0 rgba(255,255,255,0.08)",
+                    }}
+                  >
+                    <div style={{ fontSize: 11, color: "#bdbdbd", textTransform: "uppercase", marginBottom: 6 }}>
+                      Mission Progress
+                    </div>
+                    <div style={{ fontSize: 24, fontWeight: 700 }}>{progress}%</div>
+                    <div
+                      style={{
+                        marginTop: 8,
+                        height: 12,
+                        background: "#111",
+                        border: "3px solid #2a2a2a",
+                      }}
+                    >
+                      <div
+                        style={{
+                          width: `${progress}%`,
+                          height: "100%",
+                          background: stage.color,
+                        }}
+                      />
+                    </div>
+                    <div style={{ marginTop: 8, fontSize: 14 }}>XP: {xp}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}

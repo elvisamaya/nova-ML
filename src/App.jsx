@@ -243,3 +243,249 @@ function Stars() {
 }
 
 function PixelPlanet({ ocean = "#4ca8ff", land = "#6ad34d" }) {
+  const planetPixels = [
+    "....................",
+    ".......OOOOOO.......",
+    ".....OOOOOOOOOO.....",
+    "...OOOOOOOOOOOOOO...",
+    "..OOOOLLOOOOOOOOOO..",
+    "..OOLLLLLLOOOOOOOOO.",
+    ".OOOOLLLLLOOOOOOOOO.",
+    ".OOOOOLLLLOOOOOOOOO.",
+    ".OOOOOOOOOOOOOOOOOO.",
+    ".OOOOOOOOOOOOOOOOOO.",
+    ".OOOOOOOOOOOOLLLOO..",
+    ".OOOOOOOOOOLLLLLOO..",
+    "..OOOOOOOOOLLLLOO...",
+    "..OOOOOOOOOOOLLOO...",
+    "...OOOOOOOOOOOOOO...",
+    ".....OOOOOOOOOO.....",
+    ".......OOOOOO.......",
+  ];
+
+  const colorMap = {
+    O: ocean,
+    L: land,
+    ".": "transparent",
+  };
+
+  const pixel = 18;
+  const cols = planetPixels[0].length;
+
+  return (
+    <div
+      style={{
+        position: "absolute",
+        left: -40,
+        bottom: -70,
+        width: cols * pixel,
+        opacity: 0.95,
+        pointerEvents: "none",
+        imageRendering: "pixelated",
+        zIndex: 0,
+      }}
+    >
+      {planetPixels.map((row, r) => (
+        <div key={r} style={{ display: "flex", height: pixel }}>
+          {row.split("").map((cell, c) => (
+            <div
+              key={c}
+              style={{
+                width: pixel,
+                height: pixel,
+                background: colorMap[cell],
+              }}
+            />
+          ))}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function PixelPanel({ children, accent = "#fff", style = {} }) {
+  return (
+    <div
+      style={{
+        background: "#050505",
+        border: `4px solid ${accent}`,
+        boxShadow: `8px 8px 0 rgba(255,255,255,0.08)`,
+        padding: 20,
+        ...style,
+      }}
+    >
+      {children}
+    </div>
+  );
+}
+
+function PixelWorldIcon({ type, color }) {
+  const size = 34;
+  const cell = 4;
+
+  const patterns = {
+    image: [
+      "..111111..",
+      ".1......1.",
+      ".1.2222.1.",
+      ".1.2..2.1.",
+      ".1.2222.1.",
+      ".1......1.",
+      "..111111..",
+      ".....3....",
+      "....333...",
+      "...33333..",
+    ],
+    sparkle: [
+      "....1.....",
+      "....1.....",
+      "..1.1.1...",
+      "...111....",
+      "111111111.",
+      "...111....",
+      "..1.1.1...",
+      "....1.....",
+      "....1.....",
+      "..........",
+    ],
+    brain: [
+      "..111111..",
+      ".12222121.",
+      "1222222212",
+      "1221222212",
+      "1222222212",
+      ".12222121.",
+      "..112211..",
+      "..1.11.1..",
+      "..1....1..",
+      "..........",
+    ],
+    target: [
+      "..111111..",
+      ".12222221.",
+      "1221111221",
+      "1212222121",
+      "1212122121",
+      "1212222121",
+      "1221111221",
+      ".12222221.",
+      "..111111..",
+      ".....1....",
+    ],
+    check: [
+      "..........",
+      "........1.",
+      ".......11.",
+      "..1...111.",
+      "..11.111..",
+      "...1111...",
+      "....11....",
+      "..........",
+      "..........",
+      "..........",
+    ],
+    chart: [
+      "..........",
+      ".1......1.",
+      ".1....221.",
+      ".1..22221.",
+      ".1222..21.",
+      ".12....21.",
+      ".11111111.",
+      "..........",
+      "..........",
+      "..........",
+    ],
+  };
+
+  const palette = {
+    "1": color,
+    "2": "#ffffff",
+    "3": "#7aff9a",
+    ".": "transparent",
+  };
+
+  const pattern = patterns[type] || patterns.image;
+
+  return (
+    <div
+      style={{
+        width: size + 8,
+        height: size + 8,
+        background: "#000",
+        border: `3px solid ${color}`,
+        display: "grid",
+        placeItems: "center",
+        flexShrink: 0,
+      }}
+    >
+      <div>
+        {pattern.map((row, r) => (
+          <div key={r} style={{ display: "flex", height: cell }}>
+            {row.split("").map((ch, c) => (
+              <div
+                key={c}
+                style={{
+                  width: cell,
+                  height: cell,
+                  background: palette[ch],
+                }}
+              />
+            ))}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function PixelCaptainNova() {
+  const pattern = [
+    "......1111......",
+    ".....122221.....",
+    "....12222221....",
+    "....12222221....",
+    ".....133331.....",
+    "....44444444....",
+    "...4444554444...",
+    "...4444554444...",
+    "....44444444....",
+    ".....66..66.....",
+    "....666..666....",
+    "...6666..6666...",
+    "...77......77...",
+    "..777......777..",
+  ];
+
+  const palette = {
+    "1": "#ffffff",
+    "2": "#d9b08c",
+    "3": "#1e90ff",
+    "4": "#ff6b6b",
+    "5": "#59d0ff",
+    "6": "#8e7cff",
+    "7": "#ffffff",
+    ".": "transparent",
+  };
+
+  const cell = 8;
+
+  return (
+    <div style={{ imageRendering: "pixelated" }}>
+      {pattern.map((row, r) => (
+        <div key={r} style={{ display: "flex", height: cell }}>
+          {row.split("").map((ch, c) => (
+            <div
+              key={c}
+              style={{
+                width: cell,
+                height: cell,
+                background: palette[ch],
+              }}
+            />
+          ))}
+        </div>
+      ))}
+    </div>
+  );
+}

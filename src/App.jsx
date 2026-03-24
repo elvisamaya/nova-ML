@@ -734,3 +734,249 @@ function FinalScreen({ onRestart }) {
           </div>
 
           <div
+            style={{
+              marginTop: 18,
+              border: "4px solid #2a2a2a",
+              background: "#090909",
+              padding: 18,
+              fontSize: 18,
+              lineHeight: 1.7,
+              maxWidth: 760,
+              marginLeft: "auto",
+              marginRight: "auto",
+            }}
+          >
+            You traveled through data, transformation, neural layers, training, testing, and insight—and brought the journey back online.
+          </div>
+
+          <button
+            onClick={onRestart}
+            style={{
+              marginTop: 24,
+              padding: "16px 22px",
+              background: "#6fe88b",
+              color: "#000",
+              border: "4px solid #6fe88b",
+              cursor: "pointer",
+              fontSize: 18,
+              fontWeight: 800,
+              fontFamily: '"Courier New", "Lucida Console", Monaco, monospace',
+              textTransform: "uppercase",
+            }}
+          >
+            Fly Again →
+          </button>
+        </PixelPanel>
+      </div>
+    </div>
+  );
+}
+
+export default function App() {
+  const [currentStage, setCurrentStage] = useState(0);
+  const [selectedAnswers, setSelectedAnswers] = useState({});
+  const [completedStages, setCompletedStages] = useState([]);
+  const [xp, setXp] = useState(0);
+  const [started, setStarted] = useState(false);
+  const [finished, setFinished] = useState(false);
+
+  const stage = stages[currentStage];
+  const answerState = selectedAnswers[currentStage];
+  const gotItRight = answerState === stage.mission.answer;
+  const progress = Math.round((completedStages.length / stages.length) * 100);
+
+  const handleAnswer = (index) => {
+    if (answerState !== undefined) return;
+    setSelectedAnswers((prev) => ({ ...prev, [currentStage]: index }));
+  };
+
+  const resetCurrentCheckpoint = () => {
+    setSelectedAnswers((prev) => {
+      const next = { ...prev };
+      delete next[currentStage];
+      return next;
+    });
+  };
+
+  const confirmCheckpoint = () => {
+    if (!gotItRight) return;
+    if (!completedStages.includes(currentStage)) {
+      setCompletedStages((prev) => [...prev, currentStage]);
+      setXp((prev) => prev + 100);
+    }
+  };
+
+  const handleNextWorld = () => {
+    if (!completedStages.includes(currentStage)) return;
+
+    if (currentStage === stages.length - 1) {
+      setFinished(true);
+    } else {
+      setCurrentStage((s) => Math.min(s + 1, stages.length - 1));
+    }
+  };
+
+  const handleRestart = () => {
+    setCurrentStage(0);
+    setSelectedAnswers({});
+    setCompletedStages([]);
+    setXp(0);
+    setStarted(false);
+    setFinished(false);
+  };
+
+  const planetThemes = {
+    image: { ocean: "#59d0ff", land: "#d8f3ff" },
+    sparkle: { ocean: "#ff73c7", land: "#ffd2ec" },
+    brain: { ocean: "#8e7cff", land: "#ddd7ff" },
+    target: { ocean: "#ffae42", land: "#ffe0b3" },
+    check: { ocean: "#6fe88b", land: "#d8ffe0" },
+    chart: { ocean: "#5b8cff", land: "#dce7ff" },
+  };
+
+  const planetTheme = planetThemes[stage.iconType] || planetThemes.image;
+
+  return (
+    <div
+      style={{
+        minHeight: "100vh",
+        background: "#000",
+        color: "#fff",
+        position: "relative",
+        overflow: "hidden",
+        fontFamily: '"Courier New", "Lucida Console", Monaco, monospace',
+      }}
+    >
+      <Stars />
+      <PixelPlanet ocean={planetTheme.ocean} land={planetTheme.land} />
+
+      {!started ? (
+        <IntroScreen onStart={() => setStarted(true)} />
+      ) : finished ? (
+        <FinalScreen onRestart={handleRestart} />
+      ) : (
+        <div style={{ position: "relative", zIndex: 1, maxWidth: 1380, margin: "0 auto", padding: 28 }}>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "320px 1fr",
+              gap: 28,
+              alignItems: "start",
+            }}
+          >
+            <div>
+              <div
+                style={{
+                  fontSize: 12,
+                  marginBottom: 12,
+                  letterSpacing: "0.12em",
+                  textTransform: "uppercase",
+                  color: "#bdbdbd",
+                }}
+              >
+                World Select
+              </div>
+
+              <PixelPanel accent="#2a2a2a">
+                <StageSelector
+                  stages={stages}
+                  currentStage={currentStage}
+                  setCurrentStage={setCurrentStage}
+                  completedStages={completedStages}
+                />
+              </PixelPanel>
+            </div>
+
+            <div>
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "1fr 420px",
+                  gap: 18,
+                  alignItems: "start",
+                }}
+              >
+                <PixelPanel accent={stage.color}>
+                  <div
+                    style={{
+                      fontSize: 12,
+                      textTransform: "uppercase",
+                      color: stage.color,
+                      marginBottom: 10,
+                    }}
+                  >
+                    Stage {stage.id} of {stages.length}
+                  </div>
+
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 14,
+                      marginBottom: 8,
+                      flexWrap: "wrap",
+                    }}
+                  >
+                    <PixelWorldIcon type={stage.iconType} color={stage.color} />
+                    <div
+                      style={{
+                        fontSize: 48,
+                        lineHeight: 1,
+                        fontWeight: 700,
+                        textTransform: "uppercase",
+                      }}
+                    >
+                      {stage.world}
+                    </div>
+                  </div>
+
+                  <div style={{ marginTop: 12, fontSize: 22, color: "#f2f2f2" }}>
+                    {stage.title}
+                  </div>
+
+                  <div
+                    style={{
+                      marginTop: 24,
+                      border: `4px solid ${stage.color}`,
+                      padding: 18,
+                      fontSize: 20,
+                      lineHeight: 1.65,
+                      background: "#090909",
+                    }}
+                  >
+                    {stage.lesson}
+                  </div>
+
+                  <div
+                    style={{
+                      display: "grid",
+                      gridTemplateColumns: "1fr 1fr",
+                      gap: 20,
+                      marginTop: 22,
+                    }}
+                  >
+                    <div>
+                      <div
+                        style={{
+                          fontSize: 12,
+                          textTransform: "uppercase",
+                          color: "#bdbdbd",
+                          marginBottom: 10,
+                        }}
+                      >
+                        Field Notes
+                      </div>
+                      <div
+                        style={{
+                          border: "4px solid #2a2a2a",
+                          padding: 16,
+                          background: "#090909",
+                          fontSize: 18,
+                          lineHeight: 1.6,
+                        }}
+                      >
+                        {stage.simple}
+                      </div>
+                    </div>
+
+                    <div>
